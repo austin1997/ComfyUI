@@ -141,6 +141,10 @@ class GrokImageNode(IO.ComfyNode):
     ) -> IO.NodeOutput:
         validate_string(prompt, strip_whitespace=True, min_length=1)
 
+        xai_api_key = xai_api_key.strip()
+        if xai_api_key.lower().startswith("bearer "):
+            xai_api_key = xai_api_key[7:].strip()
+
         path = "/proxy/xai/v1/images/generations"
         headers = None
         if xai_api_key:
@@ -283,6 +287,10 @@ class GrokImageEditNode(IO.ComfyNode):
                 "Custom aspect ratio is only allowed when multiple images are connected to the image input."
             )
 
+        xai_api_key = xai_api_key.strip()
+        if xai_api_key.lower().startswith("bearer "):
+            xai_api_key = xai_api_key[7:].strip()
+
         path = "/proxy/xai/v1/images/edits"
         headers = None
         if xai_api_key:
@@ -410,6 +418,10 @@ class GrokVideoNode(IO.ComfyNode):
             image_url = InputUrlObject(url=f"data:image/png;base64,{tensor_to_base64_string(image)}")
         validate_string(prompt, strip_whitespace=True, min_length=1)
 
+        xai_api_key = xai_api_key.strip()
+        if xai_api_key.lower().startswith("bearer "):
+            xai_api_key = xai_api_key[7:].strip()
+
         path = "/proxy/xai/v1/videos/generations"
         headers = None
         if xai_api_key:
@@ -509,6 +521,10 @@ class GrokVideoEditNode(IO.ComfyNode):
         video_size = get_fs_object_size(video_stream)
         if video_size > 50 * 1024 * 1024:
             raise ValueError(f"Video size ({video_size / 1024 / 1024:.1f}MB) exceeds 50MB limit.")
+
+        xai_api_key = xai_api_key.strip()
+        if xai_api_key.lower().startswith("bearer "):
+            xai_api_key = xai_api_key[7:].strip()
 
         path = "/proxy/xai/v1/videos/edits"
         headers = None
@@ -652,6 +668,10 @@ class GrokVideoReferenceNode(IO.ComfyNode):
     ) -> IO.NodeOutput:
         validate_string(prompt, strip_whitespace=True, min_length=1)
 
+        xai_api_key = xai_api_key.strip()
+        if xai_api_key.lower().startswith("bearer "):
+            xai_api_key = xai_api_key[7:].strip()
+
         # We must use proxy to upload images temporarily even if they provide their own key for video generation
         # because the API requires URLs and we use our proxy for image hosting during the request.
         # Wait, if they are providing their own key to our backend for generation,
@@ -791,6 +811,10 @@ class GrokVideoExtendNode(IO.ComfyNode):
         video_size = get_fs_object_size(video.get_stream_source())
         if video_size > 50 * 1024 * 1024:
             raise ValueError(f"Video size ({video_size / 1024 / 1024:.1f}MB) exceeds 50MB limit.")
+
+        xai_api_key = xai_api_key.strip()
+        if xai_api_key.lower().startswith("bearer "):
+            xai_api_key = xai_api_key[7:].strip()
 
         path = "/proxy/xai/v1/videos/extensions"
         headers = None
